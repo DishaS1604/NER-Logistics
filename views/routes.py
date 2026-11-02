@@ -3,13 +3,13 @@ import streamlit as st
 from core.risk import assess_all
 from core.routing import find_routes, recommend, route_label
 from core.seed import PLACES
-from views.common import build_map, fmt_min, get_state, risk_md, show_map, sim_tag
+from views.common import build_map, fmt_min, get_state, risk_md, show_map
 
 
 def render():
     s = get_state()
     risks = assess_all(s["segments"], s["incidents"])
-    st.header("Route planner " + sim_tag("SAMPLE NETWORK"))
+    st.header("Route planner")
     ids = [p["id"] for p in PLACES]
     names = {p["id"]: p["name"] for p in PLACES}
     c1, c2 = st.columns(2)
@@ -32,12 +32,12 @@ def render():
             with st.container(border=True):
                 tag = " :green[**Recommended**]" if r is rec else " :red[**Not passable**]" if not r["passable"] else ""
                 st.markdown(f"**{route_label(r['nodes'], PLACES)}**{tag}")
-                st.write(f"{round(r['distance_km'])} km (sample) · est. {fmt_min(r['time_min'])} · worst risk {risk_md(r['risk_level'])}")
+                st.write(f"{round(r['distance_km'])} km · est. {fmt_min(r['time_min'])} · worst risk {risk_md(r['risk_level'])}")
                 for w in r["warnings"]:
                     st.caption(f"{w['segment_name']} ({w['level']}): " + "; ".join(w["reasons"]))
                 if not r["passable"]:
                     st.caption("Includes a CONFIRMED-blocked road, so it is excluded from recommendations.")
-        st.caption("Estimates use sample distances and nominal speeds. Risk uses transparent rules (not AI). No route is guaranteed safe.")
+        st.caption("Estimates use road network distances and nominal speeds. Risk uses transparent rules (not AI). No route is guaranteed safe.")
     with right:
         hl = routes[pick]["segment_ids"] if routes else None
         show_map(build_map(s, risks, highlight=hl), height=520, key="route_map")

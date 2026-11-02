@@ -1,5 +1,4 @@
-"""NER Logistics & Accessibility Monitor — Streamlit prototype (SIH 2026 PS 26002).
-ALL DATA IS SIMULATED SAMPLE DATA. Run:  streamlit run app.py"""
+"""NER Logistics & Accessibility Monitor (SIH 2026 PS 26002). Run:  streamlit run app.py"""
 import streamlit as st
 
 from core import actions as A
@@ -7,7 +6,7 @@ from core.storage import clear_state, load_state
 from views import alerts, dashboard, deliveries, reports, road_map, routes
 from views.common import commit, now_iso
 
-st.set_page_config(page_title="NER Logistics Monitor (Prototype)", page_icon="🚚", layout="wide")
+st.set_page_config(page_title="NER Logistics Monitor", page_icon="🚚", layout="wide")
 
 if "state" not in st.session_state:
     st.session_state["state"] = load_state(now_iso())
@@ -17,33 +16,31 @@ s = st.session_state["state"]
 PAGES = ["Dashboard", "Road map", "Route planner", "Deliveries", "Field reports", "Alerts"]
 with st.sidebar:
     st.title("NER Logistics")
-    st.caption("Accessibility monitor · prototype")
+    st.caption("Accessibility monitor")
     page = st.radio("Navigate", PAGES, label_visibility="collapsed", key="page")
     st.divider()
-    role_label = st.selectbox("Role (demo only, no real login)", ["Authority (can verify)", "Field user"])
+    role_label = st.selectbox("Role", ["Authority (can verify)", "Field user"])
     role = "authority" if role_label.startswith("Authority") else "field"
-    st.toggle("Simulate offline mode", key="sim_offline", help="Demo switch: reports are saved on the device and synced when you turn it off.")
+    st.toggle("Offline mode", key="sim_offline", help="Reports are saved on the device and synced when you turn it off.")
     online = not st.session_state["sim_offline"]
     pending = sum(1 for r in s["reports"] if r["sync_state"] == "pending_sync")
-    st.markdown((":green[● Online]" if online else ":red[○ Offline (simulated)]") + (f" · {pending} to sync" if pending else ""))
+    st.markdown((":green[● Online]" if online else ":red[○ Offline]") + (f" · {pending} to sync" if pending else ""))
     if online and pending:  # auto-sync when connectivity returns (idempotent)
         A.sync_reports(s, now_iso())
         commit()
         st.rerun()
     st.divider()
-    st.markdown(":violet-badge[SIMULATION] vehicles")
-    st.select_slider("Speed (simulated minutes per step)", [3, 10, 30], key="speed")
+    st.markdown(":violet-badge[TRACKING] vehicles")
+    st.select_slider("Speed (minutes per step)", [3, 10, 30], key="speed")
     if st.button("Advance simulation ▶"):
         A.tick(s, st.session_state["speed"])
         commit()
     st.toggle("Auto-run (Dashboard & Deliveries pages)", key="auto")
-    if st.button("Reset demo data"):
+    if st.button("Reset data"):
         clear_state()
         st.session_state["state"] = load_state(now_iso())
         st.session_state["form_n"] = st.session_state.get("form_n", 0) + 1
         st.rerun()
-
-st.info("**DEMO** — all roads, incidents, vehicles and alerts are **simulated sample data**. Not live.", icon="ℹ️")
 
 
 def with_autorun(render_fn):

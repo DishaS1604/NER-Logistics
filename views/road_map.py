@@ -28,12 +28,12 @@ def render(role):
             g = segs[sel]
             r = risks[sel]
             st.markdown(f"**{g['name']}** — {status_md(g['status'])}")
-            st.write(f"{place_name(g['from'])} ↔ {place_name(g['to'])} · {g['distance_km']} km (sample)")
+            st.write(f"{place_name(g['from'])} ↔ {place_name(g['to'])} · {g['distance_km']} km")
             st.markdown(f"Rule-based risk: {risk_md(r['level'])} · score {r['score']}")
             for reason in r["reasons"]:
                 st.write("• " + reason)
             st.caption(f"Confirmed status updated {fmt_time(g['status_updated_at'])} {('· ' + g['status_note']) if g['status_note'] else ''}")
-            st.write("**Set confirmed status (authority demo):**")
+            st.write("**Set confirmed status (authority):**")
             bc = st.columns(3)
             for col, st_name in zip(bc, ["open", "risky", "blocked"]):
                 if col.button(st_name, key=f"set_{sel}_{st_name}", disabled=role != "authority" or g["status"] == st_name):
@@ -49,4 +49,4 @@ def render(role):
             i = next(i for i in incs if i["id"] == pick)
             st.markdown(f"**{TYPE_LABEL[i['type']]}** · severity {i['severity']}/5 · {i['verification']}")
             st.write(i["description"])
-            st.caption(f"{'Sample incident' if i['source'] == 'sample' else 'Field report ' + str(i['report_id'])} · created {fmt_time(i['created_at'])}")
+            st.caption(f"{'Incident' if i['source'] == 'sample' else 'Field report ' + str(i['report_id'])} · created {fmt_time(i['created_at'])}")

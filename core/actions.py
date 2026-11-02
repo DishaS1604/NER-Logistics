@@ -127,7 +127,7 @@ def set_segment_status(state, seg_id, status, now, role):
     if seg["status"] == status:
         return state
     prev = seg["status"]
-    seg.update(status=status, status_updated_at=now, status_note="Set manually by authority (demo)")
+    seg.update(status=status, status_updated_at=now, status_note="Set manually by authority")
     _status_alert(state, seg_id, prev, now)
     return state
 

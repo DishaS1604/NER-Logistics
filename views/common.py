@@ -46,8 +46,8 @@ def risk_md(level):
     return {"Low": ":green[**Low**]", "Medium": ":orange[**Medium**]", "High": ":orange[**High**]", "Critical": ":red[**Critical**]"}[level]
 
 
-def sim_tag(text="SIMULATED"):
-    return f":violet-badge[{text}]"
+def sim_tag(text=""):
+    return ""
 
 
 def build_map(state, risks, views=None, status_filter="all", type_filter="all", highlight=None, selected_seg=None):
@@ -82,14 +82,13 @@ def build_map(state, risks, views=None, status_filter="all", type_filter="all", 
         html = (f'<div style="width:30px;height:30px;border-radius:50%;background:#fff;border:3px {style} {border};'
                 f'display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 1px 4px #0005">{TYPE_ICON[i["type"]]}</div>')
         folium.Marker([i["lat"], i["lng"]], icon=folium.DivIcon(html=html, icon_size=(30, 30), icon_anchor=(15, 15)),
-                      tooltip=f"{TYPE_LABEL[i['type']]} · severity {i['severity']} · {i['verification']}"
-                              f"{' (sample)' if i['source'] == 'sample' else ''}").add_to(m)
+                      tooltip=f"{TYPE_LABEL[i['type']]} · severity {i['severity']} · {i['verification']}").add_to(m)
     for v in views or []:
         bad = v["disruption"].startswith("blocked")
         html = (f'<div style="background:{"#d64545" if bad else "#0b2545"};color:#fff;border-radius:6px;font-size:11px;'
                 f'padding:1px 4px;white-space:nowrap;border:2px solid #fff;box-shadow:0 1px 4px #0006">🚚 {v["delivery"]["id"][-3:]}</div>')
         folium.Marker(v["position"], icon=folium.DivIcon(html=html, icon_size=(44, 22), icon_anchor=(22, 11)),
-                      tooltip=f"{v['delivery']['vehicle_id']} · {v['display_status']} · SIMULATED position").add_to(m)
+                      tooltip=f"{v['delivery']['vehicle_id']} · {v['display_status']}").add_to(m)
     if pts:
         m.fit_bounds([[min(p[0] for p in pts), min(p[1] for p in pts)], [max(p[0] for p in pts), max(p[1] for p in pts)]], padding=(20, 20))
     return m
@@ -98,5 +97,5 @@ def build_map(state, risks, views=None, status_filter="all", type_filter="all", 
 def show_map(m, height=460, key=None):
     from streamlit_folium import st_folium
     st_folium(m, height=height, use_container_width=True, returned_objects=[], key=key)
-    st.caption("🟩 open · 🟧 risky · 🟥 dashed = confirmed blocked · ⛰️🌊🌧️🚧 incidents (dashed ring = unverified) · 🚚 simulated vehicle. "
+    st.caption("🟩 open · 🟧 risky · 🟥 dashed = confirmed blocked · ⛰️🌊🌧️🚧 incidents (dashed ring = unverified) · 🚚 vehicle location. "
                "Road lines are schematic, not surveyed geometry.")

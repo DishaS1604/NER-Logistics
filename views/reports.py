@@ -9,7 +9,7 @@ from PIL import Image
 from core import actions as A
 from core.geo import distance_to_path_km
 from core.risk import TYPE_LABEL
-from views.common import IST, commit, fmt_time, get_state, now_iso, sim_tag
+from views.common import IST, commit, fmt_time, get_state, now_iso
 
 
 def _shrink(uploaded):
@@ -46,7 +46,7 @@ def render(role, online):
     with left:
         st.subheader("Submit a field report")
         st.markdown(":green-badge[Online]" if online else ":red-badge[Offline – will save on this device]")
-        st.button("Fill demo landslide report", on_click=_fill_demo)
+        st.button("Fill landslide report", on_click=_fill_demo)
         typ = st.selectbox("Hazard type", list(TYPE_LABEL), format_func=TYPE_LABEL.get, key=f"type_{n}")
         sev = st.selectbox("Severity (1 minor – 5 severe)", [1, 2, 3, 4, 5], index=2, key=f"sev_{n}")
         c1, c2 = st.columns(2)
@@ -118,7 +118,7 @@ def render(role, online):
         st.caption("A report never closes a road by itself; an authority must verify it.")
 
     with right:
-        st.subheader("Report list " + sim_tag("SAMPLE WORKFLOW"))
+        st.subheader("Report list")
         if not s["reports"]:
             st.caption("No reports yet.")
         for r in s["reports"]:

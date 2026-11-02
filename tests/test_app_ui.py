@@ -43,8 +43,8 @@ def test_full_demo_workflow_in_ui():
     assert len(at.error) >= 3
     assert "No reports yet" in text(at)
 
-    # demo report -> Pending Review, road still open, route unchanged
-    click(at, "Fill demo landslide report")
+    # report -> Pending Review, road still open, route unchanged
+    click(at, "Fill landslide report")
     click(at, "Submit report")
     assert "Pending Review" in text(at)
     go(at, "Route planner")
@@ -80,7 +80,7 @@ def test_offline_report_and_sync_in_ui():
     at = fresh()
     go(at, "Field reports")
     at.sidebar.toggle(key="sim_offline").set_value(True).run()
-    click(at, "Fill demo landslide report")
+    click(at, "Fill landslide report")
     click(at, "Submit report")
     assert "Pending sync" in text(at) and "saved on this device" in text(at)
     st_reports = at.session_state["state"]["reports"]

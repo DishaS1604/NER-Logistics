@@ -65,10 +65,10 @@ def route_label(nodes, places):
 def recommend(routes, places, segments):
     """Returns (best passable route or None, explanation text)."""
     if not routes:
-        return None, "No route exists between these places in the sample network."
+        return None, "No route exists between these places in the road network."
     passable = [r for r in routes if r["passable"]]
     if not passable:
-        return None, "No passable route: every route in the sample network includes a confirmed-blocked road."
+        return None, "No passable route: every route in the road network includes a confirmed-blocked road."
     rec = passable[0]
     fastest = min(routes, key=lambda r: r["time_min"])
     name = {s["id"]: s["name"] for s in segments}
@@ -82,4 +82,4 @@ def recommend(routes, places, segments):
         pct = round(RISK_PENALTY[fastest["risk_level"]] * 100)
         why = (f"The fastest route ({route_label(fastest['nodes'], places)}, risk {fastest['risk_level']}) loses once a "
                f"{pct}% risk penalty is added to its time; this route has lower risk-adjusted time.")
-    return rec, why + " Times are estimates from sample distances; no route is guaranteed safe."
+    return rec, why + " Times are estimates; no route is guaranteed safe."

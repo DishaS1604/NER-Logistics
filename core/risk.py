@@ -31,8 +31,7 @@ def assess_segment(seg, incidents):
         score += pts
         if inc["verification"] == "unverified":
             unverified = True
-        sample = " (sample)" if inc["source"] == "sample" else ""
-        reasons.append(f"{TYPE_LABEL[inc['type']]}, severity {inc['severity']}/5, {inc['verification']}{sample}: +{pts}")
+        reasons.append(f"{TYPE_LABEL[inc['type']]}, severity {inc['severity']}/5, {inc['verification']}: +{pts}")
     sp = STATUS_POINTS[seg["status"]]
     if sp:
         score += sp

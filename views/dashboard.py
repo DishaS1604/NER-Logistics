@@ -2,7 +2,7 @@ import streamlit as st
 
 from core.delivery import compute_view
 from core.risk import assess_all
-from views.common import build_map, fmt_min, fmt_time, get_state, risk_md, show_map, sim_tag
+from views.common import build_map, fmt_min, fmt_time, get_state, risk_md, show_map
 
 
 def render():
@@ -25,7 +25,7 @@ def render():
 
     left, right = st.columns([3, 2])
     with left:
-        st.subheader("Road map " + sim_tag("SAMPLE DATA"))
+        st.subheader("Road map")
         show_map(build_map(s, risks, views), height=420, key="dash_map")
     with right:
         st.subheader("Needs attention")
@@ -36,7 +36,7 @@ def render():
             d = v["delivery"]
             st.markdown(f"**{d['id']}** · {d['cargo']} — {':red[High]' if v['priority']['level'] == 'High' else ':orange[Medium]'}")
             st.caption(" · ".join(v["priority"]["reasons"]))
-        st.subheader("Delivery status summary " + sim_tag())
+        st.subheader("Delivery status summary")
         labels = ["In transit", "Disruption ahead", "Held – road blocked", "Rerouted – in transit", "Delivered"]
         for l in labels:
             n = sum(1 for v in views if v["display_status"] == l or (l == "In transit" and v["display_status"] == "In transit – high risk ahead"))
@@ -44,7 +44,7 @@ def render():
         st.subheader("Recent alerts")
         for a in s["alerts"][:4]:
             icon = {"critical": "🔴", "warning": "🟠", "info": "🔵"}[a["severity"]]
-            st.markdown(f"{icon} **{a['title']}**  \n:gray[{a['location']} · {fmt_time(a['time'])} · demo alert]")
+            st.markdown(f"{icon} **{a['title']}**  \n:gray[{a['location']} · {fmt_time(a['time'])}]")
 
     st.subheader("Active deliveries")
     st.dataframe([{"ID": v["delivery"]["id"], "Cargo": v["delivery"]["cargo"], "Status": v["display_status"],

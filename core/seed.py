@@ -47,7 +47,7 @@ def make_segments(now):
     ]
     for s in segs:
         if s["id"] == "S8":
-            s["status"], s["status_note"] = "risky", "Sample: heavy rainfall advisory"
+            s["status"], s["status_note"] = "risky", "Heavy rainfall advisory"
     return segs
 
 
@@ -55,11 +55,11 @@ def make_incidents(now):
     base = {"verification": "verified", "source": "sample", "created_at": now, "report_id": None}
     return [
         {**base, "id": "INC-S1", "type": "heavy_rain", "severity": 2, "segment_id": "S8", "lat": 24.3, "lng": 92.75,
-         "description": "Sample incident: heavy rainfall on the Silchar–Aizawl road."},
+         "description": "Heavy rainfall on the Silchar–Aizawl road."},
         {**base, "id": "INC-S2", "type": "road_damage", "severity": 3, "segment_id": "S6", "lat": 25.45, "lng": 93.1,
-         "description": "Sample incident: damaged road surface near Lumding–Haflong."},
+         "description": "Damaged road surface near Lumding–Haflong."},
         {**base, "id": "INC-S3", "type": "flood", "severity": 3, "segment_id": "S9", "lat": 26.45, "lng": 93.5,
-         "description": "Sample incident: waterlogging on the Guwahati–Dimapur road."},
+         "description": "Waterlogging on the Guwahati–Dimapur road."},
     ]
 
 
@@ -86,10 +86,10 @@ def initial_state(now):
         "segments": segs,
         "incidents": make_incidents(now),
         "reports": [],
-        "alerts": [{"id": "AL-0", "time": now, "severity": "info", "kind": "system", "title": "Demo data loaded",
+        "alerts": [{"id": "AL-0", "time": now, "severity": "info", "kind": "system", "title": "System initialized",
                     "incident_type": None, "location": "All roads",
-                    "explanation": "Sample roads, incidents and vehicles were loaded. All data in this prototype is simulated.",
-                    "action": "Submit a field report to start the demo workflow."}],
+                    "explanation": "Active roads, incidents and delivery vehicles loaded.",
+                    "action": "Submit a field report or monitor operations."}],
         "deliveries": [
             make_delivery("DEL-101", "AS-01-MED-4821", "medicine", "Essential medicines (cold chain)", ["GUW", "SHL", "JWI", "SIL"], 0, 0.1, segs),
             make_delivery("DEL-102", "AS-11-FD-2207", "food", "Rice and dal relief stock", ["SIL", "AIZ"], 0, 0.3, segs),
