@@ -5,8 +5,10 @@ from core import actions as A
 from core.storage import clear_state, load_state
 from views import alerts, dashboard, deliveries, reports, road_map, routes
 from views.common import commit, now_iso
+from views.styles import inject_styles
 
 st.set_page_config(page_title="NER Logistics Monitor", page_icon="🚚", layout="wide")
+inject_styles()
 
 if "state" not in st.session_state:
     st.session_state["state"] = load_state(now_iso())
@@ -15,9 +17,27 @@ s = st.session_state["state"]
 
 PAGES = ["Dashboard", "Road map", "Route planner", "Deliveries", "Field reports", "Alerts"]
 with st.sidebar:
-    st.title("NER Logistics")
-    st.caption("Accessibility monitor")
-    page = st.radio("Navigate", PAGES, label_visibility="collapsed", key="page")
+    st.markdown(
+        """
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #f1f5f9;">
+            <div style="background:#2563eb;color:#ffffff;width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 2px 4px rgba(37,99,235,0.25);">🚚</div>
+            <div>
+                <div style="font-size:1.15rem;font-weight:800;color:#0f172a;letter-spacing:-0.02em;line-height:1.2;">NER Logistics</div>
+                <div style="font-size:0.75rem;color:#64748b;font-weight:500;">Accessibility & Fleet Monitor</div>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    page = st.radio("Navigate", PAGES, label_visibility="collapsed", key="page",
+                    format_func=lambda p: {
+                        "Dashboard": "📊  Dashboard",
+                        "Road map": "🗺️  Road map",
+                        "Route planner": "🧭  Route planner",
+                        "Deliveries": "🚚  Deliveries",
+                        "Field reports": "📝  Field reports",
+                        "Alerts": "🔔  Alerts",
+                    }.get(p, p))
     st.divider()
     role_label = st.selectbox("Role", ["Authority (can verify)", "Field user"])
     role = "authority" if role_label.startswith("Authority") else "field"
