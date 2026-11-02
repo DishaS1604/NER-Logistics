@@ -26,33 +26,27 @@ def render():
     left, right = st.columns([3, 2])
     with left:
         st.subheader("Road map")
-        show_map(build_map(s, risks, views), height=440, key="dash_map")
+        show_map(build_map(s, risks, views), height=420, key="dash_map")
     with right:
-        with st.container(border=True):
-            st.subheader("Needs attention")
-            flagged = sorted([v for v in active if v["priority"]["level"] != "Normal"], key=lambda v: -v["priority"]["score"])
-            if not flagged:
-                st.caption("No deliveries flagged.")
-            for v in flagged:
-                d = v["delivery"]
-                st.markdown(f"**{d['id']}** · {d['cargo']} — {':red[High]' if v['priority']['level'] == 'High' else ':orange[Medium]'}")
-                st.caption(" · ".join(v["priority"]["reasons"]))
+        st.subheader("Needs attention")
+        flagged = sorted([v for v in active if v["priority"]["level"] != "Normal"], key=lambda v: -v["priority"]["score"])
+        if not flagged:
+            st.caption("No deliveries flagged.")
+        for v in flagged:
+            d = v["delivery"]
+            st.markdown(f"**{d['id']}** · {d['cargo']} — {':red[High]' if v['priority']['level'] == 'High' else ':orange[Medium]'}")
+            st.caption(" · ".join(v["priority"]["reasons"]))
+        st.subheader("Delivery status summary")
+        labels = ["In transit", "Disruption ahead", "Held – road blocked", "Rerouted – in transit", "Delivered"]
+        for l in labels:
+            n = sum(1 for v in views if v["display_status"] == l or (l == "In transit" and v["display_status"] == "In transit – high risk ahead"))
+            st.write(f"{l}: **{n}**")
+        st.subheader("Recent alerts")
+        for a in s["alerts"][:4]:
+            icon = {"critical": "🔴", "warning": "🟠", "info": "🔵"}[a["severity"]]
+            st.markdown(f"{icon} **{a['title']}**  \n:gray[{a['location']} · {fmt_time(a['time'])}]")
 
-        with st.container(border=True):
-            st.subheader("Delivery status summary")
-            labels = ["In transit", "Disruption ahead", "Held – road blocked", "Rerouted – in transit", "Delivered"]
-            for l in labels:
-                n = sum(1 for v in views if v["display_status"] == l or (l == "In transit" and v["display_status"] == "In transit – high risk ahead"))
-                st.write(f"{l}: **{n}**")
-
-        with st.container(border=True):
-            st.subheader("Recent alerts")
-            for a in s["alerts"][:4]:
-                icon = {"critical": "🔴", "warning": "🟠", "info": "🔵"}[a["severity"]]
-                st.markdown(f"{icon} **{a['title']}**  \n:gray[{a['location']} · {fmt_time(a['time'])}]")
-
-    with st.container(border=True):
-        st.subheader("Active deliveries")
-        st.dataframe([{"ID": v["delivery"]["id"], "Cargo": v["delivery"]["cargo"], "Status": v["display_status"],
-                       "Worst risk ahead": v["worst_risk"], "ETA (est.)": fmt_min(v["eta_min"])} for v in active],
-                     use_container_width=True, hide_index=True)
+    st.subheader("Active deliveries")
+    st.dataframe([{"ID": v["delivery"]["id"], "Cargo": v["delivery"]["cargo"], "Status": v["display_status"],
+                   "Worst risk ahead": v["worst_risk"], "ETA (est.)": fmt_min(v["eta_min"])} for v in active],
+                 use_container_width=True, hide_index=True)
