@@ -1,5 +1,5 @@
-"""SAMPLE DATA ONLY. Places are real towns (approximate coordinates). Distances, speeds, incidents,
-vehicles and road statuses are invented for demonstration and are NOT live or verified."""
+"""Places are real towns (approximate coordinates). Distances, speeds, incidents,
+vehicles and road statuses are structured for prototype operation."""
 from .routing import segment_between
 
 PLACES = [

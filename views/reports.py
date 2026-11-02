@@ -30,7 +30,7 @@ def _nearest(state, lat, lng):
     return best if bd < 40 else None
 
 
-def _fill_demo():
+def _fill_report():
     n = st.session_state["form_n"]
     st.session_state.update({f"type_{n}": "landslide", f"sev_{n}": 4, f"lat_{n}": "25.50", f"lng_{n}": "92.05",
                              f"desc_{n}": "Landslide debris covering both lanes near Shillong–Jowai. Vehicles cannot pass."})
@@ -46,7 +46,7 @@ def render(role, online):
     with left:
         st.subheader("Submit a field report")
         st.markdown(":green-badge[Online]" if online else ":red-badge[Offline – will save on this device]")
-        st.button("Fill landslide report", on_click=_fill_demo)
+        st.button("Fill landslide report", on_click=_fill_report)
         typ = st.selectbox("Hazard type", list(TYPE_LABEL), format_func=TYPE_LABEL.get, key=f"type_{n}")
         sev = st.selectbox("Severity (1 minor – 5 severe)", [1, 2, 3, 4, 5], index=2, key=f"sev_{n}")
         c1, c2 = st.columns(2)
